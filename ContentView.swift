@@ -41,13 +41,13 @@ struct ContentView: View {
             }
             return filtered.shuffled()
         }
-
+    
         var body: some View {
-
+            ScrollView {
             VStack(spacing: 20) {
-
                 
-            Text("Therapy Backpack 🧘‍♀️")
+                
+                Text("Therapy Backpack 🧘‍♀️")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 // 🌈 MOOD SELECTOR
@@ -58,37 +58,37 @@ struct ContentView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
-
+                
                 // 📊 CAPACITY DISPLAY
                 Text("\(suppliesInBackpack.count) / \(capacity)")
                     .font(.headline)
-
+                
                 if isFull {
                     Text("Your kit is full — try using something first 💛")
                         .foregroundColor(.red)
                 }
-
+                
                 // 💡 SUGGESTED TOOLS
                 Text("Suggested for you")
                     .font(.headline)
-
+                
                 HStack(spacing: 20) {
                     ForEach(suggestedTools) { tool in
                         Text(tool.emoji)
                             .font(.system(size: 50))
                             .onTapGesture {
-
+                                
                                 currentAction = tool.action
-
+                                
                                 guard !suppliesInBackpack.contains(where: { $0.emoji == tool.emoji }) else {
                                     return
                                 }
-
+                                
                                 guard suppliesInBackpack.count < capacity else {
                                     isFull = true
                                     return
                                 }
-
+                                
                                 suppliesInBackpack.append(tool)
                                 isFull = suppliesInBackpack.count >= capacity
                             }
@@ -97,31 +97,31 @@ struct ContentView: View {
                 
                 Text("All tools")
                     .font(.headline)
-
+                
                 HStack(spacing: 20) {
                     ForEach(availableTools) { tool in
                         Text(tool.emoji)
                             .font(.system(size: 40))
                             .opacity(suppliesInBackpack.contains(where: { $0.emoji == tool.emoji }) ? 0.3 : 1.0)
                             .onTapGesture {
-
+                                
                                 currentAction = tool.action
-
+                                
                                 guard !suppliesInBackpack.contains(where: { $0.emoji == tool.emoji }) else {
                                     return
                                 }
-
+                                
                                 guard suppliesInBackpack.count < capacity else {
                                     isFull = true
                                     return
                                 }
-
+                                
                                 suppliesInBackpack.append(tool)
                                 isFull = suppliesInBackpack.count >= capacity
                             }
                     }
                 }
-
+                
                 // 🧠 ACTION DISPLAY
                 if !currentAction.isEmpty {
                     Text(currentAction)
@@ -132,14 +132,14 @@ struct ContentView: View {
                         .multilineTextAlignment(.center)
                         .font(.headline)
                 }
-
+                
                 // 🎒 BACKPACK VISUAL
                 ZStack {
                     Image(systemName: "backpack")
                         .resizable()
                         .frame(width: 200, height: 250)
                         .foregroundColor(isFull ? .red : suppliesInBackpack.count >= 2 ? .blue : .brown)
-
+                    
                     VStack(spacing: 8) {
                         ForEach(suppliesInBackpack) { tool in
                             Text(tool.emoji)
@@ -152,23 +152,37 @@ struct ContentView: View {
                         }
                     }
                 }
+                
+                // EMPTY BUTTON
+                Button("Empty Backpack") {
+                    suppliesInBackpack.removeAll()
+                    currentAction = "Your kit is empty. Add something helpful 💛"
+                    isFull = false
+                }
+                .padding()
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                
+                Button("Call Hotline") {
+                    if let url = URL(string: "tel:988") {
+                        UIApplication.shared.open(url)
+                    }
+                }
+                .padding()
+                .background(Color.green)
+                .foregroundColor(.white)
+                .cornerRadius(12)
+                
+            }
+            
+            .padding()
+        }
+    }
+}
+    
 
-                      // EMPTY BUTTON
-                      Button("Empty Backpack") {
-                          suppliesInBackpack.removeAll()
-                          currentAction = "Your kit is empty. Add something helpful 💛"
-                          isFull = false
-                      }
-                      .padding()
-                      .background(Color.red)
-                      .foregroundColor(.white)
-                      .cornerRadius(10)
-                  }
-                  .padding()
-              }
-          }
 
 #Preview {
     ContentView()
 }
-
