@@ -43,7 +43,7 @@ struct ContentView: View {
 
             VStack(spacing: 20) {
 
-                // 🌈 MOOD SELECTOR
+                //MOOD SELECTOR
                 Picker("How are you feeling?", selection: $selectedMood) {
                     Text("Stressed").tag("Stressed")
                     Text("Anxious").tag("Anxious")
@@ -52,7 +52,7 @@ struct ContentView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
 
-                // 📊 CAPACITY DISPLAY
+                // CAPACITY DISPLAY
                 Text("\(suppliesInBackpack.count) / \(capacity)")
                     .font(.headline)
 
@@ -61,7 +61,7 @@ struct ContentView: View {
                         .foregroundColor(.red)
                 }
 
-                // 💡 SUGGESTED TOOLS
+                // SUGGESTED TOOLS
                 Text("Suggested for you")
                     .font(.headline)
 
@@ -88,7 +88,7 @@ struct ContentView: View {
                     }
                 }
 
-                // 🧠 ACTION DISPLAY
+                // ACTION DISPLAY
                 if !currentAction.isEmpty {
                     Text(currentAction)
                         .padding()
@@ -99,7 +99,7 @@ struct ContentView: View {
                         .font(.headline)
                 }
 
-                // 🎒 BACKPACK VISUAL
+                // BACKPACK VISUAL
                 ZStack {
                     Image(systemName: "backpack")
                         .resizable()
@@ -119,7 +119,7 @@ struct ContentView: View {
                     }
                 }
 
-                      // EMPTY BUTTON
+                      //EMPTY BUTTON
                       Button("Empty Backpack") {
                           suppliesInBackpack.removeAll()
                           currentAction = "Your kit is empty. Add something helpful 💛"
