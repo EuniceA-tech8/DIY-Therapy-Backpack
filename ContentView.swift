@@ -27,23 +27,30 @@ struct ContentView: View {
 
         // MARK: - Mood-based suggestions
         var suggestedTools: [Tool] {
+            let filtered: [Tool]
+            
             switch selectedMood {
             case "Stressed":
-                return availableTools.filter { $0.category == "Calm" || $0.category == "Anxious" }
+                filtered = availableTools.filter { $0.category == "Calm" || $0.category == "Anxious" }
             case "Anxious":
-                return availableTools.filter { $0.category == "Anxious" }
+                filtered = availableTools.filter { $0.category == "Anxious" }
             case "Sad":
-                return availableTools.filter { $0.category == "Sad" }
+                filtered = availableTools.filter { $0.category == "Sad" }
             default:
-                return availableTools
+                filtered = availableTools
             }
+            return filtered.shuffled()
         }
 
         var body: some View {
 
             VStack(spacing: 20) {
 
-                //MOOD SELECTOR
+                
+            Text("Therapy Backpack 🧘‍♀️")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                // 🌈 MOOD SELECTOR
                 Picker("How are you feeling?", selection: $selectedMood) {
                     Text("Stressed").tag("Stressed")
                     Text("Anxious").tag("Anxious")
@@ -52,7 +59,7 @@ struct ContentView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
 
-                // CAPACITY DISPLAY
+                // 📊 CAPACITY DISPLAY
                 Text("\(suppliesInBackpack.count) / \(capacity)")
                     .font(.headline)
 
@@ -61,7 +68,7 @@ struct ContentView: View {
                         .foregroundColor(.red)
                 }
 
-                // SUGGESTED TOOLS
+                // 💡 SUGGESTED TOOLS
                 Text("Suggested for you")
                     .font(.headline)
 
@@ -87,8 +94,35 @@ struct ContentView: View {
                             }
                     }
                 }
+                
+                Text("All tools")
+                    .font(.headline)
 
-                // ACTION DISPLAY
+                HStack(spacing: 20) {
+                    ForEach(availableTools) { tool in
+                        Text(tool.emoji)
+                            .font(.system(size: 40))
+                            .opacity(suppliesInBackpack.contains(where: { $0.emoji == tool.emoji }) ? 0.3 : 1.0)
+                            .onTapGesture {
+
+                                currentAction = tool.action
+
+                                guard !suppliesInBackpack.contains(where: { $0.emoji == tool.emoji }) else {
+                                    return
+                                }
+
+                                guard suppliesInBackpack.count < capacity else {
+                                    isFull = true
+                                    return
+                                }
+
+                                suppliesInBackpack.append(tool)
+                                isFull = suppliesInBackpack.count >= capacity
+                            }
+                    }
+                }
+
+                // 🧠 ACTION DISPLAY
                 if !currentAction.isEmpty {
                     Text(currentAction)
                         .padding()
@@ -99,7 +133,7 @@ struct ContentView: View {
                         .font(.headline)
                 }
 
-                // BACKPACK VISUAL
+                // 🎒 BACKPACK VISUAL
                 ZStack {
                     Image(systemName: "backpack")
                         .resizable()
@@ -119,7 +153,7 @@ struct ContentView: View {
                     }
                 }
 
-                      //EMPTY BUTTON
+                      // EMPTY BUTTON
                       Button("Empty Backpack") {
                           suppliesInBackpack.removeAll()
                           currentAction = "Your kit is empty. Add something helpful 💛"
@@ -137,3 +171,4 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
